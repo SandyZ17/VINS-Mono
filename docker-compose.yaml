@@ -1,0 +1,23 @@
+services:
+  vpd_nav_ws:
+    image: vpd_vins_mono:v1.0
+    container_name: vpd_vins_mono
+    network_mode: host
+    runtime: nvidia
+    environment:
+      # - LD_PRELOAD=/lib/aarch64-linux-gnu/libgomp.so.1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - DISPLAY=${DISPLAY} # 显示转发，用于图形界面
+      - QT_X11_NO_MITSHM=1 # 防止 Qt GUI 闪烁/崩溃
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - "${PWD}:/catkin_ws/src"
+    stdin_open: true
+    privileged: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
